@@ -3,9 +3,12 @@
 #[cfg(test)]
 mod day01 {
 
-    use std::fs::read_to_string;
     use std::collections::HashMap;
+    use std::env::current_exe;
+    use std::fs::read_to_string;
     use std::hash::Hash;
+    use std::path::Path;
+
     use itertools::Itertools;
 
     fn read_aoc_input(filename: &str) -> Vec<String> {
@@ -47,7 +50,11 @@ mod day01 {
 
     #[test]
     fn day01_aoc_input() {
-        let data: Vec<String> = read_aoc_input("..\\.input\\day01.data");
+        let cur_exe = current_exe().unwrap().into_os_string().into_string().unwrap();
+        let cur_dir: String = Path::new(&cur_exe).parent().unwrap().as_os_str().to_str().unwrap().into();
+        let data_file = cur_dir + "\\.input\\day01.data";
+
+        let data: Vec<String> = read_aoc_input(&data_file);
         let (left, right) = parse_data(data);
 
         let result_puzzle1 = puzzle1(&left, &right);

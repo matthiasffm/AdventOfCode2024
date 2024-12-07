@@ -38,8 +38,10 @@ jobs:
     # Rust ci/cd
 
     - name: Build Rust
+      working-directory: ./Rust
       run: cargo build --verbose
 
     - name: Test Rust
+      working-directory: ./Rust
       run: cargo test --verbose
 

@@ -34,3 +34,12 @@ jobs:
     - name: Test .NET
       working-directory: ./CSharp
       run: dotnet test aoc2024.csproj --no-build --verbosity normal --configuration Release
+
+    # Rust ci/cd
+
+    - name: Build Rust
+      run: cargo build --verbose
+
+    - name: Test Rust
+      run: cargo test --verbose
+

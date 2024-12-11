@@ -31,7 +31,10 @@ public class Day11
         Puzzle(stones, 75).Should().Be(219838428124832L);
     }
 
-    private static string[] ParseData(string data) => data.Split(' ', StringSplitOptions.TrimEntries);
+    private static long[] ParseData(string data)
+        => data.Split(' ', StringSplitOptions.TrimEntries)
+               .Select(s => long.Parse(s))
+               .ToArray();
 
     // Each stone has a number engraved on it. The strange part is that every time you blink, the stones change.
     // Sometimes, the number engraved on a stone changes. Other times, a stone might split in two, causing all the other stones to shift over a bit to make
@@ -45,14 +48,14 @@ public class Day11
     // No matter how the stones change, their order is preserved, and they stay on their perfectly straight line.
     //
     // Puzzle == Consider the arrangement of stones in front of you. How many stones will you have after blinking n times?
-    private static long Puzzle(string[] stones, int blinks)
+    private static long Puzzle(long[] stones, int blinks)
     {
-        var countCache = new Dictionary<(string stone, int interation), long>();
-        return stones.Sum(s => CountStones(s, blinks, countCache));
+        var countCache = new Dictionary<(long stone, int interation), long>();
+        return stones.Sum(stone => CountStones(stone, blinks, countCache));
     }
 
     // solve this by dynamic programming + recursion over the blink iteration
-    private static long CountStones(string stone, int timesToBlink, Dictionary<(string stone, int iteration), long> countCache)
+    private static long CountStones(long stone, int timesToBlink, Dictionary<(long stone, int iteration), long> countCache)
     {
         if(countCache.TryGetValue((stone, timesToBlink), out var stoneCount))
         {
@@ -65,11 +68,12 @@ public class Day11
         }
         else
         {
-            stoneCount = stone.Length switch {
-                        1 when stone == "0"             => CountStones("1", timesToBlink - 1, countCache),
-                        > 1 when stone.Length % 2 == 0  => CountStones(stone[..(stone.Length / 2)], timesToBlink - 1, countCache) + 
-                                                           CountStones(TrimLeadingZeroes(stone[(stone.Length / 2)..]), timesToBlink - 1, countCache),
-                        _                               => CountStones(MultiplyWith2024(stone), timesToBlink - 1, countCache),
+            var digits = stone.Digits();
+            stoneCount = digits switch {
+                        1 when stone == 0         => CountStones(1, timesToBlink - 1, countCache),
+                        > 1 when digits % 2 == 0  => CountStones(SplitLeft(stone, digits / 2), timesToBlink - 1, countCache) + 
+                                                     CountStones(SplitRight(stone, digits / 2), timesToBlink - 1, countCache),
+                        _                         => CountStones(stone * 2024L, timesToBlink - 1, countCache),
                     };
         }
 
@@ -77,14 +81,9 @@ public class Day11
         return stoneCount;
     }
 
-    // splitting 1000 in two gives 10, 00 but the second one should be a single 0
-    private static string TrimLeadingZeroes(string s)
-    {
-        var trimmed = s.TrimStart('0');
-        return trimmed.Length > 0 ? trimmed : "0";
-    }
+    private static long SplitLeft(long stone, int digits)
+        => stone / 10.Pow(digits);
 
-    // result is always lower then long.MaxValue for all input values here
-    private static string MultiplyWith2024(string stone)
-        => (long.Parse(stone) * 2024L).ToString();
+    private static long SplitRight(long stone, int digits)
+        => stone % 10.Pow(digits);
 }

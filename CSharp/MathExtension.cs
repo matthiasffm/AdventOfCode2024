@@ -48,4 +48,34 @@ public static class MathExtensions
 
         return result;
     }
+
+    public static T Mean<T>(this IEnumerable<T> values) where T: INumber<T>
+    {
+        T sum = T.Zero;
+        T length = T.Zero;
+
+        foreach(var val in values)
+        {
+            sum += val;
+            length++;
+        }
+
+        return sum / length;
+    }
+
+    public static T Variation<T>(this IEnumerable<T> values) where T: INumber<T>
+    {
+        var mean = Mean(values);
+
+        var sumSquared = T.Zero;
+        T length = T.Zero;
+
+        foreach(var val in values)
+        {
+            sumSquared += (val - mean) * (val - mean);
+            length++;
+        }
+
+        return sumSquared / length;
+    }
 }

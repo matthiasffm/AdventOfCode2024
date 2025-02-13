@@ -7,7 +7,7 @@ using matthiasffm.Common.Math;
 using matthiasffm.Common.Collections;
 
 /// <summary>
-/// Theme: match location ids by similarity score
+/// Theme: find antinode locations
 /// </summary>
 [TestFixture]
 public class Day08

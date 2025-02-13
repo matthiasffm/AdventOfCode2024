@@ -95,6 +95,13 @@ public class Day17
         return (regA, regB, regC, outputList.ToArray());
     }
 
+    private static long Combo(int op, long regA, long regB, long regC) => op switch {
+        4 => regA,
+        5 => regB,
+        6 => regC,
+        _ => op,
+    };
+
     // Digging deeper in the device's manual, you discover the problem: this program is supposed to output another copy of the program!
     // Unfortunately, the value in register A seems to have been corrupted. You'll need to find a new value to which you can initialize
     // register A so that the program's output instructions produce an exact copy of the program itself.
@@ -102,7 +109,15 @@ public class Day17
     // Puzzle == What is the lowest positive initial value for register A that causes the program to output a copy of itself?
     private static long? Puzzle2(int[] instructions, long aReg, int digit)
     {
-        if(digit == instructions.Length)
+        // solve this by recursion one digit of the result at a time
+        // and for every digit all 8 values are evaluated by running the vm and comparing
+        // the result with the expected result a ka the last n digits of the input instructions
+
+        // this works because the instructions form a program where register A is
+        // divided by 8 in every iteration of its loop and the rest of the instructions
+        // only work on the modulo 8 part of A
+
+        if(digit == instructions.Length) // end of recursion when all digits are calculated
         {
             return aReg;
         }
@@ -110,10 +125,10 @@ public class Day17
         long? res = null;
         for(var i = 0L; i < 8L; i++)
         {
-            var resultForNextDigit = Puzzle1(aReg * 8L + i, 0L, 0L, instructions).output;
+            var vmResultForNextDigit = Puzzle1(aReg * 8L + i, 0L, 0L, instructions).output;
 
-            if(resultForNextDigit.Length == digit + 1 &&
-               resultForNextDigit.SequenceEqual(instructions.Reverse().Take(digit + 1).Reverse()))
+            if(vmResultForNextDigit.Length == digit + 1 &&
+               vmResultForNextDigit.SequenceEqual(instructions.Reverse().Take(digit + 1).Reverse()))
             {
                 res = Puzzle2(instructions, aReg * 8L + i, digit + 1);
                 if(res.HasValue)
@@ -125,11 +140,4 @@ public class Day17
 
         return res;
     }
-
-    private static long Combo(int op, long regA, long regB, long regC) => op switch {
-        4 => regA,
-        5 => regB,
-        6 => regC,
-        _ => op,
-    };
 }

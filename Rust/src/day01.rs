@@ -4,19 +4,10 @@
 mod day01 {
 
     use std::collections::HashMap;
-    use std::env::current_exe;
     use std::fs::read_to_string;
     use std::hash::Hash;
-    use std::path::Path;
 
     use itertools::Itertools;
-
-    fn read_aoc_input(filename: &str) -> Vec<String> {
-        read_to_string(filename).expect("file not found")
-                                .lines()
-                                .map(|line| line.to_string())
-                                .collect()
-    }
 
     fn parse_data(lines: Vec<String>) -> (Vec<u32>, Vec<u32>) {
         lines.iter()
@@ -50,11 +41,10 @@ mod day01 {
 
     #[test]
     fn day01_aoc_input() {
-        let cur_exe = current_exe().unwrap().into_os_string().into_string().unwrap();
-        let cur_dir: String = Path::new(&cur_exe).parent().unwrap().as_os_str().to_str().unwrap().into();
-        let data_file = cur_dir + "\\.input\\day01.data";
-
-        let data: Vec<String> = read_aoc_input(&data_file);
+        let data: Vec<String> = include_str!(".input\\day01.data")
+                                    .lines()
+                                    .map(|line| line.to_string())
+                                    .collect();
         let (left, right) = parse_data(data);
 
         let result_puzzle1 = puzzle1(&left, &right);

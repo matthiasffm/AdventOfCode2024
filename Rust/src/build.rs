@@ -1,19 +1,21 @@
 // copy input files to output dir
 fn main() -> std::io::Result<()> {
     use std::fs;
+    use std::path::Path;
     use std::env;
     
-    let src_dir    = env::var("CARGO_MANIFEST_DIR").unwrap() + "\\..\\.input";
-    let target_dir = env::var("OUT_DIR").unwrap() + "\\..\\..\\..\\deps\\.input";
-    println!("sourcedir = {}", &src_dir);
-    println!("targetDir = {}", &target_dir);
+    let rust_dir: String = env::var("CARGO_MANIFEST_DIR").unwrap();
 
-    if !fs::exists(&target_dir).unwrap() {
-        fs::create_dir(&target_dir).unwrap();
+    let src_data_dir  = Path::new(&rust_dir).parent().unwrap().join(".input");
+    let dest_data_dir = Path::new(&rust_dir).join("src/.input");
+
+    if !fs::exists(&dest_data_dir).unwrap() {
+         fs::create_dir(&dest_data_dir).unwrap();
     }
-    let target_file = target_dir + "\\day01.data";
+    let src_file    = Path::new(&src_data_dir).join("day01.data");
+    let target_file = Path::new(&dest_data_dir).join("day01.data");
     if !fs::exists(&target_file).unwrap() {
-        fs::copy(src_dir + "\\day01.data", &target_file)?;
+         fs::copy(&src_file, &target_file)?;
     }
 
     Ok(())

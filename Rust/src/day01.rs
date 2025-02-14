@@ -4,10 +4,8 @@
 mod day01 {
 
     use std::collections::HashMap;
-    use std::fs;
     use std::hash::Hash;
     use std::io;
-    use std::path::Path;
 
     use itertools::Itertools;
 
@@ -43,16 +41,6 @@ mod day01 {
 
     #[test]
     fn day01_aoc_input() -> io::Result<()> {
-
-        println!("test::current dir:");
-        print_directory_contents(Path::new("."))?;
-
-        println!("test::src dir:");
-        print_directory_contents(Path::new("src"))?;
-
-        println!("test::.input dir:");
-        print_directory_contents(Path::new(".input"))?;
-
         let data: Vec<String> = include_str!(".input/day01.data")
                                     .lines()
                                     .map(|line| line.to_string())
@@ -118,22 +106,5 @@ mod day01 {
             map.entry(hash).or_insert(vec![]).push(item);
         }
         map
-    }
-
-    fn print_directory_contents(path: &Path) -> io::Result<()> {
-        if path.is_dir() {
-            for entry in fs::read_dir(path)? {
-                let entry = entry?;
-                let path = entry.path();
-                if path.is_dir() {
-                    println!("Directory: {}", path.display());
-                    //print_directory_contents(&path)?;
-                } else {
-                    println!("File: {}", path.display());
-                }
-            }
-        }
-
-        Ok(())
     }
 }

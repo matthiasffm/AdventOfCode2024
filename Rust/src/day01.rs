@@ -53,7 +53,7 @@ mod day01 {
         println!("test::.input dir:");
         print_directory_contents(Path::new(".input"))?;
 
-        let data: Vec<String> = include_str!(".input\\day01.data")
+        let data: Vec<String> = include_str!(".input/day01.data")
                                     .lines()
                                     .map(|line| line.to_string())
                                     .collect();
